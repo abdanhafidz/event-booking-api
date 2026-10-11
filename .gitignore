@@ -1,0 +1,8 @@
+*.env
+.env
+*.exe
+*.log
+vendor/
+out/
+perf/data/
+__pycache__/

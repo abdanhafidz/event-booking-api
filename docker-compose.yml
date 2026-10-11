@@ -1,0 +1,27 @@
+# Local stack: API + PostgreSQL. For the QA environment the API runs on
+# Hugging Face Spaces and the database is Supabase.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: booking
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      retries: 30
+
+  api:
+    build: .
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: booking
+      DB_SSLMODE: disable
+      MOCKPAY_LATENCY_MS: "100"
+    ports: ["8080:7860"]

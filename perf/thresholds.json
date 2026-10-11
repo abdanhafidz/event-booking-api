@@ -1,0 +1,40 @@
+{
+  "_comment": "strict gates always fail the build. targets fail it only when enforce is true, which is set after calibration (three runs per scenario on the QA environment).",
+  "PT-01": {
+    "enforce": false,
+    "strict": { "max_error_pct": 0 },
+    "targets": {
+      "p95_ms": { "GET /events/{id}": 50, "POST /bookings": 100, "POST /bookings/{id}/pay": 250 }
+    }
+  },
+  "PT-02": {
+    "enforce": false,
+    "strict": {},
+    "targets": {
+      "max_error_pct": 0.5,
+      "min_rps": 45,
+      "p95_ms": { "GET /events/{id}": 300, "POST /bookings": 300, "POST /bookings/{id}/pay": 500 },
+      "p99_ms": { "ALL": 800 }
+    }
+  },
+  "PT-03": {
+    "enforce": false,
+    "strict": {},
+    "targets": {
+      "max_error_pct": 1,
+      "min_rps": 130,
+      "p95_ms": { "GET /events/{id}": 800, "POST /bookings": 800, "POST /bookings/{id}/pay": 1000 },
+      "p99_ms": { "ALL": 1500 }
+    }
+  },
+  "PT-04": {
+    "enforce": false,
+    "strict": {},
+    "targets": {}
+  },
+  "PT-05": {
+    "enforce": false,
+    "strict": { "max_error_pct": 0, "expect_samples": { "POST /bookings (flash)": 2000 } },
+    "targets": { "p95_ms": { "POST /bookings (flash)": 2000 } }
+  }
+}

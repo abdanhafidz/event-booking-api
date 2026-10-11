@@ -1,0 +1,27 @@
+{
+  "PT-01": {
+    "description": "Baseline: one buyer, no think time, 50 journeys",
+    "timeout_min": 20,
+    "properties": { "buyers": 1, "browsers": 0, "buyer_loops": 50, "duration_s": 900, "ramp_s": 1, "think_min_ms": 0, "think_range_ms": 0, "flash_users": 0 }
+  },
+  "PT-02": {
+    "description": "Normal load: 50 VUs (30 browsers, 20 buyers), 2 min ramp, 15 min steady",
+    "timeout_min": 30,
+    "properties": { "buyers": 20, "browsers": 30, "buyer_loops": -1, "duration_s": 1020, "ramp_s": 120, "think_min_ms": 500, "think_range_ms": 1000, "flash_users": 0 }
+  },
+  "PT-03": {
+    "description": "Peak load: 150 VUs (90 browsers, 60 buyers), 2 min ramp, 10 min steady",
+    "timeout_min": 25,
+    "properties": { "buyers": 60, "browsers": 90, "buyer_loops": -1, "duration_s": 720, "ramp_s": 120, "think_min_ms": 500, "think_range_ms": 1000, "flash_users": 0 }
+  },
+  "PT-04": {
+    "description": "Stress: linear ramp to 600 VUs over 20 min, then 5 min at peak",
+    "timeout_min": 40,
+    "properties": { "buyers": 240, "browsers": 360, "buyer_loops": -1, "duration_s": 1500, "ramp_s": 1200, "think_min_ms": 500, "think_range_ms": 1000, "flash_users": 0 }
+  },
+  "PT-05": {
+    "description": "Flash sale: 2,000 users book 1 ticket each at the same moment on the 500-ticket flash fixture",
+    "timeout_min": 15,
+    "properties": { "buyers": 0, "browsers": 0, "buyer_loops": 1, "duration_s": 300, "ramp_s": 1, "think_min_ms": 0, "think_range_ms": 0, "flash_users": 2000, "flash_ramp_s": 30 }
+  }
+}

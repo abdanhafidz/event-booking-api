@@ -1,0 +1,306 @@
+basePath: /
+definitions:
+  dto.BookingResponse:
+    properties:
+      created_at:
+        type: string
+      currency:
+        type: string
+      event_id:
+        type: string
+      expires_at:
+        type: string
+      id:
+        type: string
+      quantity:
+        type: integer
+      status:
+        type: string
+      ticket_type_id:
+        type: string
+      total_amount:
+        type: integer
+      unit_price:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  dto.CreateBookingRequest:
+    properties:
+      quantity:
+        maximum: 6
+        minimum: 1
+        type: integer
+      ticket_type_id:
+        type: string
+    required:
+    - quantity
+    - ticket_type_id
+    type: object
+  dto.ErrorResponse:
+    properties:
+      code:
+        type: string
+      errors: {}
+      message: {}
+      meta_data: {}
+      status:
+        type: string
+    type: object
+  dto.EventResponse:
+    properties:
+      currency:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      starts_at:
+        type: string
+      ticket_types:
+        items:
+          $ref: '#/definitions/dto.TicketTypeResponse'
+        type: array
+    type: object
+  dto.PayBookingRequest:
+    properties:
+      payment_token:
+        maxLength: 64
+        type: string
+    required:
+    - payment_token
+    type: object
+  dto.SuccessResponse-dto_BookingResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.BookingResponse'
+      message: {}
+      meta_data: {}
+      status:
+        type: string
+    type: object
+  dto.SuccessResponse-dto_EventResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.EventResponse'
+      message: {}
+      meta_data: {}
+      status:
+        type: string
+    type: object
+  dto.TicketTypeResponse:
+    properties:
+      available:
+        type: integer
+      capacity:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: integer
+    type: object
+info:
+  contact:
+    name: Abdan Hafidz
+  description: Minimal booking API built for integration and performance testing.
+    Callers identify themselves with X-User-Id; payment is a mock selected by token
+    (tok_success, tok_decline, tok_timeout).
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Event Ticket Booking API
+  version: 1.0.0
+paths:
+  /v1/bookings:
+    post:
+      consumes:
+      - application/json
+      description: Reserves tickets all-or-nothing and starts the payment hold
+      parameters:
+      - description: Caller user ID
+        in: header
+        name: X-User-Id
+        required: true
+        type: string
+      - description: Idempotency key
+        in: header
+        name: Idempotency-Key
+        required: true
+        type: string
+      - description: Booking request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-dto_BookingResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Reserve tickets
+      tags:
+      - Booking
+  /v1/bookings/{id}:
+    get:
+      parameters:
+      - description: Caller user ID
+        in: header
+        name: X-User-Id
+        required: true
+        type: string
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-dto_BookingResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get one of your bookings
+      tags:
+      - Booking
+  /v1/bookings/{id}/cancel:
+    post:
+      parameters:
+      - description: Caller user ID
+        in: header
+        name: X-User-Id
+        required: true
+        type: string
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-dto_BookingResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Cancel a pending or confirmed booking before the event starts
+      tags:
+      - Booking
+  /v1/bookings/{id}/pay:
+    post:
+      consumes:
+      - application/json
+      description: tok_success confirms; tok_decline and tok_timeout fail the booking
+        and release its tickets
+      parameters:
+      - description: Caller user ID
+        in: header
+        name: X-User-Id
+        required: true
+        type: string
+      - description: Idempotency key
+        in: header
+        name: Idempotency-Key
+        required: true
+        type: string
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payment request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PayBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-dto_BookingResponse'
+        "402":
+          description: Payment Required
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Pay for a booking with the mock gateway
+      tags:
+      - Booking
+  /v1/events/{id}:
+    get:
+      description: Event with its ticket types and live availability
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-dto_EventResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get an event
+      tags:
+      - Event
+schemes:
+- http
+- https
+swagger: "2.0"
