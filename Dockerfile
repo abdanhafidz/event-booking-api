@@ -19,7 +19,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 # RUNTIME STAGE
 # =====================
 # Alpine rather than distroless: the entrypoint is a shell script.
-FROM alpine:3.20
+FROM alpine:3.24
 
 RUN apk add --no-cache ca-certificates tzdata \
  && adduser -D -u 1000 app
