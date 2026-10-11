@@ -52,7 +52,7 @@ jobs:
       # Integration tests skip when this is unset; it points them at the service above.
       TEST_DATABASE_URL: host=localhost port=5432 user=postgres dbname=booking_test sslmode=disable
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v5
         with:
           go-version: "1.26"
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v5
         with:
           go-version: "1.26"
@@ -96,7 +96,7 @@ jobs:
     timeout-minutes: 25
     environment: qa
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -129,7 +129,7 @@ jobs:
     timeout-minutes: 10
     environment: qa
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v5
         with:
           go-version: "1.26"
@@ -181,7 +181,7 @@ jobs:
       DB_SSLMODE: require
       OUT: out/perf/${{ matrix.scenario }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v5
         with:
           go-version: "1.26"
