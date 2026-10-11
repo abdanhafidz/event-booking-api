@@ -65,7 +65,7 @@ jobs:
       - name: Concurrency tests (20 repetitions)
         run: go test ./tests/integration/... -run 'Concurrent|IdempotentConcurrent' -count=20
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-report
           path: out/integration.xml
@@ -141,7 +141,7 @@ jobs:
       - name: Smoke test against the OpenAPI document
         run: bash scripts/smoke_test.sh "${{ vars.QA_BASE_URL }}" out/smoke
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: smoke-test
           path: out/smoke/smoke-results.md
@@ -209,7 +209,7 @@ jobs:
         if: always() && steps.bzm.outcome == 'success'
         run: python scripts/perf/check_thresholds.py "$SCENARIO" "$OUT/aggregate.json" perf/thresholds.json | tee -a "$GITHUB_STEP_SUMMARY"
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: blazemeter-${{ matrix.scenario }}
           path: |
